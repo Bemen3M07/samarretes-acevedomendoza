@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 void main() {
   runApp(const MyApp());
@@ -193,6 +194,8 @@ class MyTextInput extends StatelessWidget {
 }
 
 class TShirtCalculatorLogic {
+  static final Logger logger = Logger();
+
   static const double small = 10.0;
   static const double medium = 12.0;
   static const double large = 15.0;
@@ -213,10 +216,19 @@ class TShirtCalculatorLogic {
       String size, int numTShirts, String offer) {
     double price = calculatePrice(size, numTShirts);
 
+    logger.d('Precio base: $price'); // Usamos el nivel de log 'debug'
+
     if (offer == '10%') {
       price *= 0.9; // Descuento del 10%
+      logger.d('Aplicado descuento 10%, nuevo precio: $price');
     } else if (offer == '20€') {
-      price -= 20; // Descuento de 20€
+      if (price > 100) {
+        price -= 20; // Descuento de 20€ solo si el precio es mayor que 100€
+        logger.d('Aplicado descuento de 20€, nuevo precio: $price');
+      } else {
+        logger.d(
+            'No se aplica descuento de 20€ porque el precio es menor a 100€');
+      }
     }
 
     return price;
