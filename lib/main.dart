@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
 void main() {
+  // Inicia la aplicación Flutter y establece MyApp como el widget principal.
   runApp(const MyApp());
 }
 
@@ -10,12 +11,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Define la estructura principal de la aplicación.
     return MaterialApp(
-      title: 'Calculadora de Camisetas',
+      title: 'Calculadora de Camisetas', // Título de la aplicación.
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.blue, // Define el color principal de la aplicación.
       ),
-      home: const TShirtCalculatorScreen(),
+      home: const TShirtCalculatorScreen(), // Establece la pantalla inicial.
     );
   }
 }
@@ -28,17 +30,21 @@ class TShirtCalculatorScreen extends StatefulWidget {
 }
 
 class TShirtCalculatorScreenState extends State<TShirtCalculatorScreen> {
+  // Precios fijos para cada talla de camiseta.
   static const double smallPrice = TShirtCalculatorLogic.small;
   static const double mediumPrice = TShirtCalculatorLogic.medium;
   static const double largePrice = TShirtCalculatorLogic.large;
 
+  // Variables de estado para almacenar la cantidad, talla, oferta y precio.
   int? _numTShirts;
   String? _size;
   String? _offer;
   double _price = 0.0;
 
+  // Método para calcular el precio basado en la talla, cantidad y oferta.
   void _calculatePrice() {
     if (_numTShirts == null || _size == null) {
+      // Si no se ha seleccionado una talla o cantidad, el precio es 0.
       setState(() {
         _price = 0.0;
       });
@@ -46,10 +52,12 @@ class TShirtCalculatorScreenState extends State<TShirtCalculatorScreen> {
     }
 
     if (_offer == null) {
+      // Si no hay oferta, calcula el precio sin descuento.
       setState(() {
         _price = TShirtCalculatorLogic.calculatePrice(_size!, _numTShirts!);
       });
     } else {
+      // Si hay oferta, calcula el precio con descuento.
       setState(() {
         _price = TShirtCalculatorLogic.calculatePriceWithDiscount(
             _size!, _numTShirts!, _offer!);
@@ -59,9 +67,10 @@ class TShirtCalculatorScreenState extends State<TShirtCalculatorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Construye la interfaz de usuario de la pantalla.
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Calculadora de Camisetas'),
+        title: const Text('Calculadora de Camisetas'), // Título de la AppBar.
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -69,26 +78,28 @@ class TShirtCalculatorScreenState extends State<TShirtCalculatorScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const SizedBox(height: 20),
+            // Campo de entrada para el número de camisetas.
             MyTextInput(
               labelText: 'Samarretes',
               hintText: 'Número de samarretes',
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 setState(() {
-                  _numTShirts = int.tryParse(value);
-                  _calculatePrice();
+                  _numTShirts = int.tryParse(value); // Actualiza la cantidad.
+                  _calculatePrice(); // Recalcula el precio.
                 });
               },
             ),
-            const Text('Talla'),
+            const Text('Talla'), // Texto para seleccionar la talla.
+            // Opciones de talla (pequeña, mediana, grande).
             RadioListTile(
               title: const Text('Petita ($smallPrice €)'),
               value: 'small',
               groupValue: _size,
               onChanged: (value) {
                 setState(() {
-                  _size = value;
-                  _calculatePrice();
+                  _size = value; // Actualiza la talla seleccionada.
+                  _calculatePrice(); // Recalcula el precio.
                 });
               },
             ),
@@ -115,37 +126,39 @@ class TShirtCalculatorScreenState extends State<TShirtCalculatorScreen> {
               },
             ),
             const SizedBox(height: 20),
-            const Text('Oferta'),
+            const Text('Oferta'), // Texto para seleccionar la oferta.
+            // Menú desplegable para seleccionar una oferta.
             DropdownButton<String>(
               value: _offer,
               items: const [
                 DropdownMenuItem(
                   value: null,
-                  child: Text('Sense desompte'),
+                  child: Text('Sense descompte'), // Opción sin descuento.
                 ),
                 DropdownMenuItem(
                   value: '10%',
-                  child: Text('Descompte del 10%'),
+                  child: Text('Descompte del 10%'), // Descuento del 10%.
                 ),
                 DropdownMenuItem(
                   value: '20€',
-                  child: Text('Descompte per quantitat'),
+                  child: Text('Descompte per quantitat'), // Descuento por cantidad.
                 ),
               ],
               onChanged: (value) {
                 setState(() {
-                  _offer = value;
-                  _calculatePrice();
+                  _offer = value; // Actualiza la oferta seleccionada.
+                  _calculatePrice(); // Recalcula el precio.
                 });
               },
-              hint: const Text('Selecciona una oferta'),
+              hint: const Text('Selecciona una oferta'), // Texto de sugerencia.
             ),
             const SizedBox(height: 20),
+            // Muestra el precio calculado.
             Row(
               children: [
                 Text(
                   'Preu: $_price €',
-                  style: const TextStyle(fontSize: 32),
+                  style: const TextStyle(fontSize: 32), // Estilo del texto del precio.
                 ),
               ],
             ),
@@ -157,11 +170,13 @@ class TShirtCalculatorScreenState extends State<TShirtCalculatorScreen> {
 }
 
 class MyTextInput extends StatelessWidget {
-  final String labelText;
-  final String hintText;
-  final TextInputType keyboardType;
-  final Function(String) onChanged;
+  // Propiedades del widget.
+  final String labelText; // Texto que aparece como etiqueta.
+  final String hintText; // Texto de sugerencia dentro del campo.
+  final TextInputType keyboardType; // Tipo de teclado que se muestra.
+  final Function(String) onChanged; // Función que se ejecuta cuando el texto cambia.
 
+  // Constructor del widget.
   const MyTextInput({
     super.key,
     required this.labelText,
@@ -172,36 +187,41 @@ class MyTextInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Construye la interfaz de usuario del campo de texto.
     return Container(
-      width: 200, // Set the desired width
+      width: 200, // Ancho fijo del contenedor.
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey), // Add border
-        borderRadius: BorderRadius.circular(8), // Optional: Add border radius
+        border: Border.all(color: Colors.grey), // Borde gris alrededor del contenedor.
+        borderRadius: BorderRadius.circular(8), // Bordes redondeados.
       ),
       child: TextField(
         decoration: InputDecoration(
-          labelText: labelText,
-          hintText: hintText,
-          border: InputBorder.none, // Remove default border
-          contentPadding:
-              const EdgeInsets.all(8), // Add padding inside the border
+          labelText: labelText, // Etiqueta del campo.
+          hintText: hintText, // Texto de sugerencia.
+          border: InputBorder.none, // Elimina el borde predeterminado del TextField.
+          contentPadding: const EdgeInsets.all(8), // Espaciado interno.
         ),
-        keyboardType: keyboardType,
-        onChanged: onChanged,
+        keyboardType: keyboardType, // Tipo de teclado (numérico, texto, etc.).
+        onChanged: onChanged, // Función que se ejecuta cuando el texto cambia.
       ),
     );
   }
 }
 
 class TShirtCalculatorLogic {
+  // Logger para registrar mensajes de depuración.
   static final Logger logger = Logger();
 
+  // Precios fijos para cada talla de camiseta.
   static const double small = 10.0;
   static const double medium = 12.0;
   static const double large = 15.0;
 
+  // Método para calcular el precio sin descuento.
   static double calculatePrice(String size, int numTShirts) {
     double price = 0.0;
+
+    // Asigna el precio según la talla seleccionada.
     if (size == 'small') {
       price = small;
     } else if (size == 'medium') {
@@ -209,21 +229,27 @@ class TShirtCalculatorLogic {
     } else if (size == 'large') {
       price = large;
     }
+
+    // Retorna el precio total multiplicado por la cantidad de camisetas.
     return price * numTShirts;
   }
 
+  // Método para calcular el precio con descuento.
   static double calculatePriceWithDiscount(
       String size, int numTShirts, String offer) {
+    // Calcula el precio base sin descuento.
     double price = calculatePrice(size, numTShirts);
 
-    logger.d('Precio base: $price'); // Usamos el nivel de log 'debug'
+    // Registra el precio base en el logger.
+    logger.d('Precio base: $price');
 
+    // Aplica descuentos según la oferta seleccionada.
     if (offer == '10%') {
-      price *= 0.9; // Descuento del 10%
+      price *= 0.9; // Aplica un descuento del 10%.
       logger.d('Aplicado descuento 10%, nuevo precio: $price');
     } else if (offer == '20€') {
       if (price > 100) {
-        price -= 20; // Descuento de 20€ solo si el precio es mayor que 100€
+        price -= 20; // Aplica un descuento de 20€ si el precio es mayor a 100€.
         logger.d('Aplicado descuento de 20€, nuevo precio: $price');
       } else {
         logger.d(
@@ -231,6 +257,7 @@ class TShirtCalculatorLogic {
       }
     }
 
+    // Retorna el precio final después de aplicar los descuentos.
     return price;
   }
 }
